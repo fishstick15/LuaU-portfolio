@@ -1,0 +1,40 @@
+-- This script is supposed to generate a field of trees whenever a player joins
+-- This is used in "green as far as the eye can go."
+
+local maxClones = 2000
+
+for i = 1, maxClones do
+	local positionX = math.random(-3067, 1022)
+	local positionZ = math.random(-3070, 1024)
+
+	local newPosition = Vector3.new(positionX, 8, positionZ)
+
+	local treeClone = game.Workspace.Tree:Clone()
+	treeClone.Parent = game.Workspace
+
+	game.Workspace.Tree:MoveTo(newPosition)
+	
+	local treeClonePos = treeClone:getPivot()
+	
+	if treeClonePos.Position.Y > 8 then
+		treeClone:Destroy()
+	end
+end
+
+for i = 1, maxClones do
+	local positionX = math.random(-3067, 1022)
+	local positionZ = math.random(-3070, 1024)
+
+	local newPosition = Vector3.new(positionX, 8, positionZ)
+
+	local treeClone = game.Workspace.Tree2:Clone()
+	treeClone.Parent = game.Workspace
+
+	game.Workspace.Tree2:MoveTo(newPosition)
+
+	local treeClonePos = treeClone:getPivot()
+
+	if treeClonePos.Position.Y > 8 then
+		treeClone:Destroy()
+	end
+end

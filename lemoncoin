@@ -1,0 +1,65 @@
+-- This script is designed for a currency able to be picked up off the ground.
+-- Used in "Lemon RPG"
+
+local DataStoreService = game:GetService("DataStoreService")
+local CoinsDataStore = DataStoreService:GetDataStore("CoinsDataStore")
+
+local RespawnTime = 120 -- respawn delay (seconds)
+
+function savePlayerData(player)
+	local leaderstats = player:FindFirstChild("leaderstats")
+	if leaderstats then
+		local coins = leaderstats:FindFirstChild("Lemons")
+		if coins then
+			CoinsDataStore:SetAsync(player.UserId .. "_Coins", coins.Value)
+		end
+	end
+end
+
+function loadPlayerData(player)
+	local success, result = pcall(function()
+		return CoinsDataStore:GetAsync(player.UserId .. "_Coins")
+	end)
+	if success and result ~= nil then
+		local leaderstats = player:FindFirstChild("leaderstats")
+		if leaderstats then
+			local coins = leaderstats:FindFirstChild("Lemons")
+			if coins then
+				coins.Value = result
+			end
+		end
+	end
+end
+
+function onTouch(otherPart)
+	local player = game.Players:GetPlayerFromCharacter(otherPart.Parent)
+	if player then
+		local leaderstats = player:FindFirstChild("leaderstats")
+		if not leaderstats then
+
+			return
+		end
+		local coins = leaderstats:FindFirstChild("Lemons")
+		if coins then
+			coins.Value = coins.Value + 1 -- coin value
+		end
+		script.Parent.CanTouch = false 
+		script.Parent.Transparency = 1
+		wait(RespawnTime)
+		script.Parent.CanTouch = true
+		script.Parent.Transparency = 0
+
+	end
+end
+
+function onPlayerRemoving(player)
+	savePlayerData(player)
+end
+
+function onPlayerAdded(player)
+	loadPlayerData(player)
+end
+
+script.Parent.Touched:Connect(onTouch)
+game.Players.PlayerRemoving:Connect(onPlayerRemoving)
+game.Players.PlayerAdded:Connect(onPlayerAdded)
